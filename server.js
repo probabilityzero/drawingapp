@@ -1,33 +1,64 @@
-// server.js
-const express = require('express'); // Import the Express library
-const http = require('http');       // Import the built-in HTTP module
-const socketIO = require('socket.io'); // Import Socket.IO
+const express = require('express');
+const http = require('http');
+const socketIO = require('socket.io');
+const path = require('path');
 
-const app = express();              // Create an Express application
-const server = http.createServer(app); // Create an HTTP server using Express
-const io = socketIO(server);         // Initialize Socket.IO with the HTTP server
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+const PORT = process.env.PORT || 3000;
 
-const PORT = 3000; // Define the port the server will listen on
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve static files from the 'public' directory (where our HTML will be)
-app.use(express.static('public'));
+let drawingData = [];
+const users = {};
 
-// Handle Socket.IO connections
 io.on('connection', (socket) => {
-    console.log('User connected:', socket.id); // Log when a user connects
+    console.log('User connected:', socket.id);
+    users[socket.id] = { userName: 'Anonymous', drawing: false, erasing: false };
+
+    socket.emit('initialDrawData', drawingData);
 
     socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id); // Log when a user disconnects
+        console.log('User disconnected:', socket.id);
+        delete users[socket.id];
+        io.emit('userListUpdate', getUsersArray());
     });
 
-    // Listen for 'draw' events from clients
-    socket.on('draw', (data) => {
-        // Broadcast the 'draw' event to all connected clients (including sender)
-        io.emit('draw', data); // 'io.emit' sends to *all* clients
+    socket.on('setUserName', (userName) => {
+        users[socket.id].userName = userName || 'Anonymous';
+        io.emit('userListUpdate', getUsersArray());
     });
+
+    socket.on('drawStart', (data) => {
+        users[socket.id].drawing = !data.isErasing;
+        users[socket.id].erasing = data.isErasing;
+        io.emit('userListUpdate', getUsersArray());
+    });
+    socket.on('drawEnd', () => {
+        users[socket.id].drawing = false;
+        users[socket.id].erasing = false;
+        io.emit('userListUpdate', getUsersArray());
+    });
+
+    socket.on('draw', (data) => {
+        drawingData.push(data);
+        io.emit('draw', data);
+        console.log(`User: ${data.userName || 'Unknown'} - Draw event`);
+    });
+
+    socket.on('clear', () => {
+        drawingData = [];
+        io.emit('clear');
+    });
+
+    function getUsersArray() {
+        return Object.values(users).map(user => ({ userName: user.userName, drawing: user.drawing, erasing: user.erasing }));
+    }
+
+    io.emit('userListUpdate', getUsersArray());
 });
 
-// Start the server
 server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });

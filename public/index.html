@@ -1,14 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Collaborative Drawing App</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Collaborative Whiteboard</title>
+    <link rel="stylesheet" href="output.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heroicons@2.1.1/heroicons.min.js"></script>
 </head>
-<body>
-    <h1>Collaborative Drawing App</h1>
-    <canvas id="drawingCanvas" width="800" height="600"></canvas> <!-- Canvas element -->
-
-    <script src="/socket.io/socket.io.js"></script> <!-- Include Socket.IO client library -->
-    <script src="script.js"></script>       <!-- Link to your JavaScript file -->
+<body class="bg-gray-50 font-light text-gray-800">
+    <div id="nameModal" class="hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white rounded-xl shadow-xl p-8 md:p-10">
+            <h2 class="text-2xl md:text-3xl font-bold mb-6 text-gray-800">Welcome! Enter Your Name</h2>
+            <input type="text" id="userNameInput" placeholder="Your Name" class="border p-3 rounded-md w-full mb-6 text-gray-700 focus:ring-blue-500 focus:border-blue-500 text-base">
+            <button id="saveNameButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg block w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 text-base">Save Name</button>
+        </div>
+    </div>
+    <div class="fixed bottom-0 left-0 w-full bg-white shadow-md p-4 md:p-6 flex justify-center gap-6 md:gap-8 z-10">
+        <div class="flex items-center gap-1">
+            <label for="colorPicker" class="text-sm md:text-base font-medium text-gray-700">Color:</label>
+            <input type="color" id="colorPicker" value="#000000" class="h-8 w-8 md:h-10 md:w-10 rounded-full cursor-pointer border-none">
+        </div>
+        <button id="eraser" class="px-3 py-2 md:px-4 md:py-2 rounded-full hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center text-sm md:text-base text-gray-700 font-medium">
+            <i id="eraserIcon" class="heroicons heroicons-outline-eraser w-4 h-4"></i> <i id="pencilIcon" class="heroicons heroicons-outline-pencil hidden w-4 h-4"></i>
+        </button>
+        <div class="flex items-center gap-1">
+            <label for="eraserSize" class="text-sm md:text-base font-medium text-gray-700">Size:</label>
+            <input type="range" id="eraserSize" min="1" max="50" value="3" class="w-24 md:w-32">
+        </div>
+    </div>
+    <canvas id="drawingCanvas" class="block cursor-crosshair bg-white shadow-lg rounded-md m-0 w-full h-full"></canvas>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+    <script>
+        heroicons.render();
+    </script>
 </body>
 </html>

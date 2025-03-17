@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.controls-bottom input[type="color"] {
+    @apply h-8 w-8 md:h-10 md:w-10 rounded-full cursor-pointer border-none;
+}
+
+.controls-bottom label {
+    @apply text-sm md:text-base font-medium text-gray-700;
+}
+
+.controls-bottom button {
+    @apply px-3 py-2 md:px-4 md:py-2 rounded-full hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center text-sm md:text-base text-gray-700 font-medium;
+}
+
+.controls-bottom input[type="range"] {
+    @apply w-24 md:w-32;
+}
+
+#nameModal .bg-white {
+    @apply rounded-xl shadow-xl p-8 md:p-10;
+}
+#nameModal h2 {
+    @apply text-2xl md:text-3xl font-bold mb-6 text-gray-800;
+}
+#nameModal input {
+    @apply border p-3 rounded-md w-full mb-6 text-gray-700 focus:ring-blue-500 focus:border-blue-500 text-base;
+}
+#nameModal button {
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg block w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 text-base;
+}
+
+.controls-bottom {
+    @apply p-4 md:p-6 gap-6 md:gap-8;
+}
+
+body {
+    @apply bg-gray-50 text-gray-800;
+}
+
+h1 {
+    @apply text-3xl md:text-4xl font-bold text-gray-900 mb-4;
+}
+
+.active {
+    @apply bg-gray-200;
+}
